@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Love Letter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #fce3e3;
+      font-family: 'Press Start 2P', monospace;
+      color: #b03b3b;
+      margin: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      justify-content: center;
+    }
+
+    #paper {
+      background: linear-gradient(135deg, #fff9f7 0%, #f5e9e8 100%);
+      box-shadow:
+        0 0 20px rgba(0,0,0,0.1),
+        inset 0 0 30px #fce3e3;
+      border: 6px solid #d94f4f;
+      border-radius: 12px;
+      padding: 40px 50px;
+      max-width: 900px;
+      min-height: 480px;
+      white-space: pre-wrap;
+      font-size: 14px;
+      line-height: 1.5;
+      user-select: none;
+      position: relative;
+    }
+
+    #container {
+      min-height: 400px;
+      color: #b03b3b;
+    }
+
+    #cursor {
+      display: inline-block;
+      width: 10px;
+      background-color: #b03b3b;
+      margin-left: 2px;
+      animation: blink 1s infinite;
+      vertical-align: bottom;
+      height: 16px;
+      position: absolute;
+      bottom: 40px;
+      right: 50px;
+    }
+
+    @keyframes blink {
+      0%, 50% { background-color: #b03b3b; }
+      51%, 100% { background-color: transparent; }
+    }
+
+    #back-btn {
+      margin-top: 30px;
+      padding: 14px 24px;
+      font-size: 16px;
+      background-color: crimson;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-family: 'Press Start 2P', monospace;
+      border-radius: 6px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      transition: background-color 0.3s ease;
+    }
+
+    #back-btn:hover {
+      background-color: darkred;
+    }
+  </style>
+</head>
+<body>
+  <div id="paper">
+    <div id="container"></div>
+    <div id="cursor"></div>
+  </div>
+
+  <button id="back-btn" onclick="location.href='gallery.html'">BACK TO GALLERY</button>
+
+  <script>
+    const text = `a very happy girlfriends day criss. as much as this is your day its very much mine too because i get to appreciate what a wonderful girlfrend that you are. there is so much to precipitate from this cloud of love and memories we have built together. and i hope this message pours the rain. Lets start of easy and simple with I love you. I love you so much criss, you are so special to me i mean you are the love of my life after all. I never thought id get this far with the same girl i knew when i first met her with HER EX i mean just truely insane how everything ends up working out. You were so fucking cool when I met you and I remember your ex added me in a gc with you in discord for us to play roblox together. You were so quiet and shy but looking back we did get along pretty well. Us pairing together and talking about eminem etc while she was tryna pair with random other people in roblox. I MEAN WE BOTH WERE TALKING SHIT ABOUT SHAN. I miss that day it was so cute. i remember that night we just kept talking to eachother and trying songs together while i spammed the shitty kid dancing gif over and over. this was all before the hate phase and long time since id never have thought you would end up being the love of my life. when we were talking through spotify i told a friend of mine about you and everything asking wether you were hitting on me or not. yeah i was kinda clueless while also knowing i didn't want a relationship its just not for me. I still think it isn't but im trying my best to be the best boyfriend that i can but please know this is my first time and all i can do is be wrong and make mistakes but i hope you will pardon me for them. Its insane how beautiful of a girlfriend I have i just cannot take a day where i don't think and appriciate you. I've always had so much to admire about you and there is soo much more love in me to give you
+
+im sorry if this letter comes off as inconsistent for im only typing whatever comes from my head. All i feel is love and its just something i have no words for. I wish for you to be here for then i could compliment you with my actions instead of mere words. I desire to one day hold you in my arms like a cradle to you. i wanna feel your bodily anatomy while clenching your soul beneath my heart. I Wanna build a world for us just you me and our kids criss. I wish and hope everything goes well and i also hope this is what you hope from me. I hope you love me
+
+happy girlfriends days criss i love you more than im willing to share. The more you know the more you are gonna be spoiled and thats something we don't want
+
+happy girlfriends day criss i love you more than i know how to share. Really wtf do i even do. Just always remember there is so much love in here
+
+I hope this whole letter comes accross you like a fucking prayer. I know it reads weird but you know me i love weird. Im not systematic guy or whatever word you got for it. your man is najwan
+
+i enjoy everything about you. Everything you hate and everything you claim the people around you hate i adore. When i say i love you its not just love my criss its also a promise. A promise that i will be around and will be there through every hurdel you would have to pass through. Every pain and every joy i will be the first to confort you or to celebrate. My love is way more than my words make it to be. I am not the greatest poet but i will be the greatest man
+
+i love you criss <333`;
+
+    const container = document.getElementById('container');
+    let i = 0;
+
+    function type() {
+      if (i < text.length) {
+        container.textContent += text.charAt(i);
+        i++;
+        setTimeout(type, 20);
+      } else {
+        document.getElementById('cursor').style.display = 'none';
+      }
+    }
+
+    type();
+  </script>
+</body>
+</html>

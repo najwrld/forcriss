@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Our Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background-color: #fce3e3;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-top: 30px;
+      color: #b03b3b;
+      font-family: 'Press Start 2P', monospace;
+      text-align: center;
+    }
+
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .controls input[type="file"] {
+      display: none;
+    }
+
+    .controls label {
+      padding: 10px 16px;
+      background-color: #d94f4f;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-family: 'Press Start 2P', monospace;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+      padding: 20px;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .photo {
+      position: relative;
+      background-color: white;
+      border: 3px solid #d94f4f;
+      overflow: hidden;
+      aspect-ratio: 1/1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background-color: rgba(255, 0, 0, 0.8);
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: 'Press Start 2P', monospace;
+    }
+
+    .love-button {
+      margin: 40px 0;
+      padding: 14px 24px;
+      font-size: 16px;
+      background-color: crimson;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      text-transform: uppercase;
+      font-family: 'Press Start 2P', monospace;
+    }
+
+    .love-button:hover {
+      background-color: darkred;
+    }
+  </style>
+</head>
+<body>
+  <h1>I LOVE YOU SO MUCH CRISS</h1>
+
+  <div class="controls" id="uploadControls" style="display: none;">
+    <label for="imageUpload">📤 Upload Image</label>
+    <input type="file" id="imageUpload" accept="image/*" />
+  </div>
+
+  <div class="gallery" id="galleryContainer"></div>
+
+  <button class="love-button" onclick="location.href='love.html'">I LOVE YOU</button>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getStorage, ref as sRef, uploadBytes, getDownloadURL, deleteObject
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+    import {
+      getFirestore, collection, addDoc, getDocs, deleteDoc, doc
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCLuT43ZCX7j1CTd8fqPstZR541K__tf0g",
+      authDomain: "gallary-project-58fad.firebaseapp.com",
+      databaseURL: "https://gallary-project-58fad-default-rtdb.firebaseio.com",
+      projectId: "gallary-project-58fad",
+      storageBucket: "gallary-project-58fad.appspot.com",
+      messagingSenderId: "880478319844",
+      appId: "1:880478319844:web:9e43f31e602d3592f5e8f1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    const userName = localStorage.getItem("userName")?.toLowerCase();
+    const allowedUsers = ["criss", "najwan"];
+    const isOwner = allowedUsers.includes(userName);
+
+    const galleryContainer = document.getElementById("galleryContainer");
+    const uploadControls = document.getElementById("uploadControls");
+
+    if (isOwner) {
+      uploadControls.style.display = "flex";
+      document.getElementById("imageUpload").addEventListener("change", handleUpload);
+    }
+
+    async function loadImages() {
+      const snapshot = await getDocs(collection(db, "images"));
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const imgBox = document.createElement("div");
+        imgBox.className = "photo";
+
+        const img = document.createElement("img");
+        img.src = data.url;
+        img.alt = "gallery image";
+
+        imgBox.appendChild(img);
+
+        if (isOwner) {
+          const del = document.createElement("button");
+          del.className = "delete-btn";
+          del.innerText = "X";
+          del.onclick = async () => {
+            await deleteDoc(doc(db, "images", docSnap.id));
+            await deleteObject(sRef(storage, data.path));
+            imgBox.remove();
+          };
+          imgBox.appendChild(del);
+        }
+
+        galleryContainer.appendChild(imgBox);
+      });
+    }
+
+    async function handleUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const filePath = `images/${Date.now()}_${file.name}`;
+      const fileRef = sRef(storage, filePath);
+
+      await uploadBytes(fileRef, file);
+      const url = await getDownloadURL(fileRef);
+
+      await addDoc(collection(db, "images"), {
+        url: url,
+        path: filePath,
+        uploadedBy: userName
+      });
+
+      location.reload();
+    }
+
+    loadImages();
+  </script>
+</body>
+</html>
+
